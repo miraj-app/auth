@@ -285,7 +285,7 @@
         const SUPABASE_URL = 'https://rkdebosscifylvmllefn.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJrZGVib3NzY2lmeWx2bWxsZWZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1MTUwNzIsImV4cCI6MjA4MTA5MTA3Mn0._LSKD4hVJZ4qfI66VXXvmWXMaovWZhNOgB6GyZ_qL9I';
         
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         // DOM elements
         const loadingEl = document.getElementById('loading');
@@ -326,7 +326,7 @@
             
             try {
                 // Set the session from the tokens
-                const { data, error } = await supabase.auth.setSession({
+                const { data, error } = await supabaseClient.auth.setSession({
                     access_token: accessToken,
                     refresh_token: refreshToken
                 });
@@ -454,7 +454,7 @@
             submitBtn.textContent = 'Updating...';
             
             try {
-                const { error } = await supabase.auth.updateUser({
+                const { error } = await supabaseClient.auth.updateUser({
                     password: password
                 });
                 
