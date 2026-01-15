@@ -311,12 +311,15 @@
             const refreshToken = params.get('refresh_token');
             const type = params.get('type');
             
+            console.log('Reset page init:', { hasAccessToken: !!accessToken, type, hash: hash.substring(0, 50) + '...' });
+            
             // Update "Open in App" link with the full URL
             if (hash) {
                 openAppLink.href = `miraj://reset-password#${hash}`;
             }
             
-            if (type !== 'recovery' || !accessToken) {
+            // Check if we have tokens
+            if (!accessToken) {
                 showError('Invalid or expired reset link. Please request a new password reset.');
                 return;
             }
@@ -328,15 +331,23 @@
                     refresh_token: refreshToken
                 });
                 
+                console.log('Session result:', { hasData: !!data, hasSession: !!data?.session, error: error?.message });
+                
                 if (error) {
-                    showError(error.message);
+                    showError('Session expired or invalid. Please request a new password reset. (' + error.message + ')');
+                    return;
+                }
+                
+                if (!data?.session) {
+                    showError('Could not establish session. Please request a new password reset.');
                     return;
                 }
                 
                 // Show the password form
                 showForm();
             } catch (e) {
-                showError('Failed to verify reset link. Please try again.');
+                console.error('Init error:', e);
+                showError('Failed to verify reset link: ' + e.message);
             }
         }
         
